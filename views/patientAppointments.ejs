@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Consultations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #555;
+            border-radius: 3px;
+        }
+        .header a:hover {
+            background: #777;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .consultation-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .doctor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .doctor-info h3 {
+            margin: 0;
+            color: #333;
+        }
+        .specialty {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .consultation-date {
+            text-align: right;
+            color: #888;
+            font-size: 13px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 10px;
+            padding-top: 10px;
+            font-size: 15px;
+        }
+        .section-content {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #333;
+            line-height: 1.6;
+            color: #333;
+            font-size: 15px;
+        }
+        .no-consultations {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .prescription-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .prescription-header h4 {
+            margin: 0;
+            color: #333;
+        }
+        .prescription-status {
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .prescription-display {
+            background: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin-top: 10px;
+        }
+        .prescription-display h5 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
+        .prescription-content {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .pdf-list {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-left: 4px solid #007bff;
+        }
+        .pdf-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pdf-item strong {
+            color: #333;
+        }
+        .pdf-item p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>My Consultations</h1>
+        <a href="/patientDashboard">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <% if (consultations && consultations.length > 0) { %>
+            <% consultations.forEach(consultation => { %>
+                <div class="consultation-card">
+                    <div class="doctor-header">
+                        <div class="doctor-info">
+                            <h3><%= consultation.doctorName %></h3>
+                            <div class="specialty"><%= consultation.doctorSpecialty %></div>
+                        </div>
+                        <div class="consultation-date">
+                            <%= new Date(consultation.submittedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Your Complaint</div>
+                        <div class="section-content"><%= consultation.currentIllness %></div>
+                    </div>
+
+                    <% if (consultation.recentSurgery) { %>
+                        <div class="section">
+                            <div class="section-title">Recent Surgery</div>
+                            <div class="section-content"><%= consultation.recentSurgery %></div>
+                        </div>
+                    <% } %>
+
+                    <% if (consultation.surgeryTimespan) { %>
+                        <div class="section">
+                            <div class="section-title">Time Since Surgery</div>
+                            <div class="section-content"><%= consultation.surgeryTimespan %></div>
+                        </div>
+                    <% } %>
+
+                    <div class="section">
+                        <div class="section-title">Your Diabetes Status</div>
+                        <div class="section-content"><%= consultation.diabetesHistory ? consultation.diabetesHistory.charAt(0).toUpperCase() + consultation.diabetesHistory.slice(1) : 'Not specified' %></div>
+                    </div>
+
+                    <% if (consultation.allergies) { %>
+                        <div class="section">
+                            <div class="section-title">Allergies</div>
+                            <div class="section-content"><%= consultation.allergies %></div>
+                        </div>
+                    <% } %>
+
+                    <% if (consultation.others) { %>
+                        <div class="section">
+                            <div class="section-title">Additional Information</div>
+                            <div class="section-content"><%= consultation.others %></div>
+                        </div>
+                    <% } %>
+
+                    <!-- Prescription Section -->
+                    <div class="prescription-section">
+                        <div class="prescription-header">
+                            <h4>Prescription</h4>
+                            <span class="prescription-status <%= consultation.prescription ? 'status-completed' : 'status-pending' %>">
+                                <%= consultation.prescription ? 'Available' : 'Pending' %>
+                            </span>
+                        </div>
+
+                        <% if (consultation.prescription) { %>
+                            <div class="prescription-display">
+                                <h5>Care Instructions:</h5>
+                                <div class="prescription-content"><%= consultation.prescription.careToBeTaken %></div>
+                                
+                                <% if (consultation.prescription.medicines) { %>
+                                    <h5 style="margin-top: 15px;">Medicines:</h5>
+                                    <div class="prescription-content"><%= consultation.prescription.medicines %></div>
+                                <% } %>
+                                
+                                <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                                    Prescribed by <%= consultation.doctorName %> on <%= new Date(consultation.prescription.prescribedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                                </p>
+
+                                <!-- Download Auto-generated PDF Button -->
+                                <button class="btn btn-primary" onclick="downloadPDF('<%= consultation.id %>')">
+                                    📄 Download Prescription PDF
+                                </button>
+                            </div>
+
+                            <!-- Display Custom PDFs sent by doctor -->
+                            <% if (consultation.prescription.customPDFs && consultation.prescription.customPDFs.length > 0) { %>
+                                <div class="pdf-list">
+                                    <h5 style="margin: 0 0 10px 0; color: #0066cc;">📎 Additional Documents from Doctor:</h5>
+                                    <% consultation.prescription.customPDFs.forEach((pdf) => { %>
+                                        <div class="pdf-item">
+                                            <div>
+                                                <strong><%= pdf.originalName %></strong>
+                                                <% if (pdf.notes) { %>
+                                                    <p><%= pdf.notes %></p>
+                                                <% } %>
+                                                <p style="color: #999;">
+                                                    Uploaded on <%= new Date(pdf.uploadedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                                </p>
+                                            </div>
+                                            <button class="btn btn-primary" onclick="downloadCustomPDF('<%= pdf.filename %>')">
+                                                📥 Download
+                                            </button>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                            <p style="color: #888; font-style: italic;">Your doctor hasn't provided a prescription yet.</p>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-consultations">
+                <p>You haven't submitted any consultations yet.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        function downloadPDF(consultationId) {
+            window.open('/generatePrescriptionPDF/' + consultationId, '_blank');
+        }
+
+        function downloadCustomPDF(filename) {
+            window.open('/downloadPDF/' + filename, '_blank');
+        }
+    </script>
+</body>
+</html>

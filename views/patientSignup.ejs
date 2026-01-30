@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 30px;
+        }
+        .container {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 30px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .helper-text {
+            font-size: 11px;
+            color: #888;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 60px;
+        }
+        .history-panel {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        .history-panel h4 {
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .history-tags {
+            min-height: 25px;
+        }
+        .history-tag {
+            background: #666;
+            color: white;
+            padding: 4px 10px;
+            margin: 3px;
+            display: inline-block;
+            font-size: 12px;
+        }
+        .history-tag .remove-tag {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #555;
+        }
+        .toggle-form {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .toggle-form a {
+            color: #333;
+        }
+        .error {
+            background: #fcc;
+            color: #c00;
+            padding: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patient Sign Up</h1>
+        <p class="subtitle">Create your account</p>
+        
+        <div class="error" id="errorMsg"></div>
+        
+        <form action="/patientSignUp" method="POST" id="signupForm">
+
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Shreya Jain" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Age *</label>
+                    <input type="number" id="age" name="age" placeholder="25" min="1" max="150" required />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="profilePicture">Profile Picture URL</label>
+                <input type="url" id="profilePicture" name="profilePicture" placeholder="https://example.com/photo.jpg" />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" placeholder="patient@example.com" required />
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1234567890" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" placeholder="Enter strong password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="surgeryHistory">History of Surgery</label>
+                <textarea id="surgeryHistory" name="surgeryHistory" placeholder="Kidney Stone 2020, Knee Surgery 2022"></textarea>
+                <div class="helper-text">Separate multiple surgeries with commas</div>
+                <div class="history-panel">
+                    <h4>Surgery History Preview</h4>
+                    <div class="history-tags" id="surgeryTags"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="illnessHistory">History of Illness</label>
+                <textarea id="illnessHistory" name="illnessHistory" placeholder="Diabetes, Hypertension, Asthma"></textarea>
+                <div class="helper-text">Separate multiple conditions with commas</div>
+                <div class="history-panel">
+                    <h4>Illness History Preview</h4>
+                    <div class="history-tags" id="illnessTags"></div>
+                </div>
+            </div>
+            
+            <button type="submit">Create Account</button>
+        </form>
+        
+        <div class="toggle-form">
+            Already have an account? <a href="/patientSignIn">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const errorMsg = document.getElementById('errorMsg');
+        const surgeryInput = document.getElementById('surgeryHistory');
+        const illnessInput = document.getElementById('illnessHistory');
+        const surgeryTagsContainer = document.getElementById('surgeryTags');
+        const illnessTagsContainer = document.getElementById('illnessTags');
+
+        function updateTags(input, container) {
+            const text = input.value.trim();
+            container.innerHTML = '';
+            
+            if (text) {
+                const items = text.split(',')
+                    .map(item => item.trim())
+                    .filter(item => item.length > 0);
+                
+                items.forEach((item, index) => {
+                    const tag = document.createElement('div');
+                    tag.className = 'history-tag';
+                    tag.innerHTML = `
+                        <span>${item}</span>
+                        <span class="remove-tag" data-index="${index}">×</span>
+                    `;
+                    
+                    //tag
+                    tag.querySelector('.remove-tag').addEventListener('click', () => {
+                        items.splice(index, 1);
+                        input.value = items.join(', ');
+                        updateTags(input, container);
+                    });
+                    
+                    container.appendChild(tag);
+                });
+            }
+        }
+
+        surgeryInput.addEventListener('input', () => updateTags(surgeryInput, surgeryTagsContainer));
+        illnessInput.addEventListener('input', () => updateTags(illnessInput, illnessTagsContainer));
+
+        updateTags(surgeryInput, surgeryTagsContainer);
+        updateTags(illnessInput, illnessTagsContainer);
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/patientSignUp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/patientDashboard';
+                } else {
+                    const error = await response.json();
+                    errorMsg.textContent = error.error || 'Sign up failed';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

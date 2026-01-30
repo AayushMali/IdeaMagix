@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f9f9f9;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+        .doctor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            margin-right: 20px;
+        }
+        .doctor-details h3 {
+            margin: 0;
+        }
+        .specialty {
+            color: #666;
+            font-size: 14px;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .step h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 80px;
+        }
+        .radio-group {
+            margin-bottom: 15px;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-right: 20px;
+            width: auto;
+        }
+        input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        .step-indicator {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .step-indicator p {
+            margin: 0;
+            color: #666;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-prev {
+            background: #ccc;
+            color: #333;
+        }
+        .btn-prev:hover {
+            background: #bbb;
+        }
+        .btn-next {
+            background: #333;
+            color: white;
+        }
+        .btn-next:hover {
+            background: #555;
+        }
+        .btn-submit {
+            background: #28a745;
+            color: white;
+        }
+        .btn-submit:hover {
+            background: #218838;
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            background: #fcc;
+            color: #c00;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/findDoctors" class="back-link">← Back to Doctors</a>
+    </div>
+
+    <div class="container">
+        <div class="doctor-info">
+            <div class="doctor-avatar">👨‍⚕️</div>
+            <div class="doctor-details">
+                <h3><%= doctor.name %></h3>
+                <div class="specialty"><%= doctor.specialty %></div>
+            </div>
+        </div>
+
+        <div class="error" id="errorMsg"></div>
+
+        <form id="consultationForm" action="/submitConsultation/<%= doctor.id %>" method="POST">
+            <div class="step-indicator">
+                <p>Step <span id="currentStep">1</span> of 3</p>
+            </div>
+
+            <div class="steps">
+                <div class="step active" id="step1">
+                    <h2>Medical History</h2>
+                    
+                    <div class="form-group">
+                        <label for="currentIllness">Current Illness/Symptoms</label>
+                        <textarea id="currentIllness" name="currentIllness" placeholder="Describe your current health concerns..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recentSurgery">Recent Surgery (if any)</label>
+                        <input type="text" id="recentSurgery" name="recentSurgery" placeholder="e.g., Appendectomy (3 months ago)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="surgeryTimespan">Time Since Surgery</label>
+                        <input type="text" id="surgeryTimespan" name="surgeryTimespan" placeholder="e.g., 6 months, 1 year">
+                    </div>
+                </div>
+
+                <div class="step" id="step2">
+                    <h2>Family Medical History</h2>
+
+                    <div class="form-group">
+                        <label>Family History of Diabetes</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="diabetesHistory" value="diabetic"> Diabetic
+                            </label>
+                            <label>
+                                <input type="radio" name="diabetesHistory" value="non-diabetic"> Non-Diabetic
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allergies">Any Allergies</label>
+                        <textarea id="allergies" name="allergies" placeholder="Describe any allergies you have..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="others">Others</label>
+                        <textarea id="others" name="others" placeholder="Any other medical information..."></textarea>
+                    </div>
+                </div>
+
+                <div class="step" id="step3">
+                    <h2>Payment</h2>
+
+                    <div style="display: flex; gap: 30px; margin-bottom: 30px;">
+                        <div style="flex: 1;">
+                            <p style="text-align: center; margin-bottom: 15px; font-weight: 600;">Scan and Pay using UPI App</p>
+                            <div style="text-align: center; background: #f9f9f9; padding: 15px; border: 1px solid #ddd;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=doctor@upi&pn=DoctorPayment&am=600&cu=INR" 
+                                     alt="QR Code" 
+                                     style="width: 180px; height: 180px;">
+                            </div>
+                        </div>
+
+                        <div style="flex: 1;">
+                            <p style="margin-bottom: 20px; font-weight: 600;">Pay Using Any App</p>
+                            <div style="margin-bottom: 20px;">
+                                <p style="font-size: 28px; color: #333; margin: 0; font-weight: bold;">₹ 600</p>
+                                <p style="font-size: 13px; color: #888; margin: 5px 0 0 0;">(After Payment)</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionId">Enter Transaction ID*</label>
+                                <input type="text" id="transactionId" name="transactionId" 
+                                       placeholder="Auto-generated" required readonly 
+                                       style="padding: 10px; border: 1px solid #ddd; font-size: 14px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 30px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #333;">
+                        <p style="margin: 0; font-weight: 600; font-size: 13px; text-transform: uppercase; color: #333; margin-bottom: 10px;">Consent for Online Consultation</p>
+                        <p style="margin: 0; font-size: 12px; color: #666; line-height: 1.6;">I have understood that this is an online consultation without a physical checkup of my symptoms. The doctor hence relies on my description of the problem or scanned reports provided by me. With this understanding, I hereby give my consent for online consultation.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 0; cursor: pointer;">
+                            <input type="checkbox" id="consentCheckbox" name="consent" required style="width: 18px; height: 18px; cursor: pointer;">
+                            <span style="font-size: 14px; color: #333;">YES, I ACCEPT</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-prev" id="prevBtn" onclick="prevStep()" style="display: none;">Previous</button>
+                <button type="button" class="btn btn-next" id="nextBtn" onclick="nextStep()">Next</button>
+                <button type="submit" class="btn btn-submit" id="submitBtn" style="display: none;">Submit Consultation</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            document.getElementById('currentStep').textContent = step;
+
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'block' : 'none';
+            
+            if (step === 3 && !document.getElementById('transactionId').value) {
+                const txnId = 'TXN' + Date.now() + Math.floor(Math.random() * 1000);
+                document.getElementById('transactionId').value = txnId;
+            }
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            currentStep--;
+            showStep(currentStep);
+        }
+
+        function validateStep(step) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            if (step === 1) {
+                const currentIllness = document.getElementById('currentIllness').value.trim();
+                if (!currentIllness) {
+                    errorMsg.textContent = 'Please describe your current illness or symptoms';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+            }
+            
+            if (step === 3) {
+                const transactionId = document.getElementById('transactionId').value.trim();
+                const consentChecked = document.getElementById('consentCheckbox').checked;
+                
+                if (!transactionId) {
+                    errorMsg.textContent = 'Please enter the transaction ID';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                if (!consentChecked) {
+                    errorMsg.textContent = 'Please accept the consent to proceed';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        document.getElementById('consultationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            if (!validateStep(3)) {
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('consultationForm'));
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('/submitConsultation/<%= doctor.id %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Consultation submitted successfully!');
+                    window.location.href = '/patientDashboard';
+                } else {
+                    const error = await response.json();
+                    errorMsg.textContent = error.error || 'Submission failed';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        showStep(1);
+    </script>
+</body>
+</html>

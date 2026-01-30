@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .profile-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .profile-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #333;
+        }
+        .profile-picture-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        .profile-info h2 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        .specialty {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .experience {
+            color: #888;
+            font-size: 15px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .info-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #333;
+        }
+        .info-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .prescription-btn {
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .prescription-btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/doctorDashboard" class="back-link">← Back to Dashboard</a>
+        <h1>Doctor Profile</h1>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <% if (doctor.profilePicture) { %>
+                    <img src="<%= doctor.profilePicture %>" alt="<%= doctor.name %>" class="profile-picture">
+                <% } else { %>
+                    <div class="profile-picture-placeholder">👨‍⚕️</div>
+                <% } %>
+                <div class="profile-info">
+                    <h2><%= doctor.name %></h2>
+                    <div class="specialty"><%= doctor.specialty %></div>
+                    <div class="experience"><%= doctor.yearsOfExperience %> years of experience</div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value"><%= doctor.email %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value"><%= doctor.phone %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value"><%= new Date(doctor.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Doctor ID</div>
+                    <div class="info-value">#<%= doctor.id %></div>
+                </div>
+            </div>
+
+            <form action="/prescriptionPage" method="get">
+                <button type="submit" class="prescription-btn">View Prescriptions & Consultations</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

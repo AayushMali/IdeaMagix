@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #555;
+            border-radius: 3px;
+        }
+        .header a:hover {
+            background: #777;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .appointment-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .patient-info h3 {
+            margin: 0;
+            color: #333;
+        }
+        .patient-details {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .appointment-date {
+            text-align: right;
+            color: #888;
+            font-size: 13px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding-top: 10px;
+        }
+        .section-content {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #333;
+            line-height: 1.6;
+        }
+        .no-appointments {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>My Appointments</h1>
+        <a href="/doctorDashboard">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <% if (consultations && consultations.length > 0) { %>
+            <% consultations.forEach(consultation => { %>
+                <div class="appointment-card">
+                    <div class="patient-header">
+                        <div class="patient-info">
+                            <h3><%= consultation.patientName %></h3>
+                            <div class="patient-details">
+                                Age: <%= consultation.patientAge %> | Phone: <%= consultation.patientPhone %> | Email: <%= consultation.patientEmail %>
+                            </div>
+                        </div>
+                        <div class="appointment-date">
+                            <%= new Date(consultation.submittedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Current Illness/Symptoms</div>
+                        <div class="section-content"><%= consultation.currentIllness %></div>
+                    </div>
+
+                    <% if (consultation.recentSurgery) { %>
+                        <div class="section">
+                            <div class="section-title">Recent Surgery</div>
+                            <div class="section-content"><%= consultation.recentSurgery %></div>
+                        </div>
+                    <% } %>
+
+                    <% if (consultation.surgeryTimespan) { %>
+                        <div class="section">
+                            <div class="section-title">Time Since Surgery</div>
+                            <div class="section-content"><%= consultation.surgeryTimespan %></div>
+                        </div>
+                    <% } %>
+
+                    <div class="section">
+                        <div class="section-title">Family History - Diabetes</div>
+                        <div class="section-content"><%= consultation.diabetesHistory ? consultation.diabetesHistory.charAt(0).toUpperCase() + consultation.diabetesHistory.slice(1) : 'Not specified' %></div>
+                    </div>
+
+                    <% if (consultation.allergies) { %>
+                        <div class="section">
+                            <div class="section-title">Allergies</div>
+                            <div class="section-content"><%= consultation.allergies %></div>
+                        </div>
+                    <% } %>
+
+                    <% if (consultation.others) { %>
+                        <div class="section">
+                            <div class="section-title">Other Information</div>
+                            <div class="section-content"><%= consultation.others %></div>
+                        </div>
+                    <% } %>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-appointments">
+                <p>No appointments yet.</p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
